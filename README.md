@@ -84,10 +84,10 @@ This project is licensed under the [License Name].
 Contributions to CSPANLP are welcome. Please refer to the CONTRIBUTING.md file for guidelines.
 
 ## Support
-For support and queries, please contact [shaunshib96@pplweb.com](mailto:sshibu@pplweb.com).
+For support and queries, please contact [shaunshib96@gmail.com](mailto:sshibu@gmail.com).
 
 ## Authors and Acknowledgment
-- Shaun Shibu - Initial work - [shaunshib96@pplweb.com](mailto:sshibu@pplweb.com)
+- Shaun Shibu - Initial work - [shaunshib96@gmail.com](mailto:sshibu@gmail.com)
 - Acknowledgments to the team and contributors who supported this project.
 
 ## Additional Information
