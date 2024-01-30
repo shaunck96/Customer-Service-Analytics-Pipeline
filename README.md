@@ -1,5 +1,5 @@
 
-# CSPANLP: NLP Processing of Customer Service Calls
+Processing of Customer Service Calls
 
 ## Overview
 CSPANLP is a comprehensive package designed for the Natural Language Processing (NLP) of customer service call data. This package offers a suite of tools for transcribing, redacting, summarizing, topic modeling, and sentiment analysis of customer service calls, aiming to enhance the understanding and management of customer interactions in the utility sector.
