@@ -75,6 +75,9 @@ Analyze the sentiment of the calls.
 ```python
 sentiment_analyzer = sentiment_eval(db=db, abfs_client=abfsClient, pytest_flag=False)
 sentiment_analyzer.sentiment_emotion_classifier()
+
+### LATEST UPDATES:
+Llama2 chat for customer service insights
 ```
 
 ## License
