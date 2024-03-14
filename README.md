@@ -1,6 +1,3 @@
-![MicrosoftTeams-image](https://github.com/shaunck96/Customer-Service-Analytics-Pipeline/assets/79271767/27d95465-d190-4a51-8028-70ade0d01f1c)
-
-
 ## Features
 - **Audio Processing:** Transcribe customer service calls and extract meaningful information from audio data.
 - **PII Redaction:** Automatically redact Personally Identifiable Information (PII) from transcriptions, ensuring data privacy and compliance.
