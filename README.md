@@ -7,7 +7,4 @@
 
 ## Authors and Acknowledgment
 - Shaun Shibu - Initial work - [shaunshib96@gmail.com](mailto:sshibu@gmail.com)
-- Acknowledgments to the team and contributors who supported this project.
 
-## Additional Information
-For more detailed information about each module and function in CSPANLP, please refer to the detailed documentation provided within the package.
