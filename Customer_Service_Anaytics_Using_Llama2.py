@@ -1,33 +1,3 @@
-# Databricks notebook source
-# MAGIC %md
-# MAGIC Necessary Installs
-
-# COMMAND ----------
-
-# MAGIC %pip install chromadb==0.3.29
-# MAGIC !pip install openai==0.28
-# MAGIC !pip -q install langchain
-# MAGIC !pip -q install bitsandbytes accelerate xformers einops
-# MAGIC !pip -q install datasets loralib sentencepiece
-# MAGIC !pip -q install pypdf
-# MAGIC !pip install transformers
-# MAGIC !pip -q install sentence_transformers
-# MAGIC !pip install accelerate
-# MAGIC !pip install tiktoken
-# MAGIC !pip install ctransformers>=0.2.24
-# MAGIC !pip install --upgrade typing_extensions
-# MAGIC !pip install typing-extensions --upgrade
-# MAGIC !pip install adlfs
-# MAGIC !pip install llmlingua
-# MAGIC !pip install jinja2==3.1.3
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC **FETCHING DOWNLOADED AUDIO FROM TWILIO END POINT ----> TRANSCRIPTION USING FASTER WHISPER AND HF REDACTION MODEL** 
-
-# COMMAND ----------
-
 import ast
 import base64
 import datetime
@@ -107,8 +77,7 @@ class Gramformer:
                 self.c_m = AutoModelForSeq2SeqLM.from_pretrained(
                     model_path)
             else:
-                model_path = (r"datascience/data/ds/sandbox"
-                              r"/shibushaun/huggingface_models"
+                model_path = (/huggingface_models"
                               r"/gramformer")
                 self.c_m, self.c_t = DBUtilConnectionCreator(  # noqa: F405
                     self.db).download_and_load_gramformer_model(
@@ -473,13 +442,11 @@ class AudioProcessor:
         self.abfs_client = abfs_client
         self.db = db
         if self.pytest_flag is False:
-            self.config_file_path = (r"datascience/data/ds/sandbox"
-                                     r"/shibushaun/audio_processor_credentials"
+            self.config_file_path = (r"/audio_processor_credentials"
                                      r"/credentials_new.json")
             with self.abfs_client.open(self.config_file_path, 'r') as f:
                 config = json.load(f)
-                file_path = (r"datascience/data/ds/sandbox"
-                             r"/shibushaun/huggingface_models/StanfordAIMI"
+                file_path = (r"/huggingface_models/StanfordAIMI"
                              r"/stanford-deidentifier-base")
 
                 self.drm, self.drt = DBUtilConnectionCreator(  # noqa: F405
@@ -488,19 +455,13 @@ class AudioProcessor:
                         file_path)
 
         else:
-            self.config_file_path = (r"C:\Users\307164\Desktop"
-                                     r"\deployment_for_bala"
-                                     r"\deployment_refactored"
-                                     r"\cs_pa_nlp\credentials"
+            self.config_file_path = (r"credentials"
                                      r"\audio_processor_credentials.json")
 
             with open(self.config_file_path, 'r') as f:
                 config = json.load(f)
                 huggingface_hub.login(config['hf_token'])
-                self.drm_path = (r"C:\Users\307164\Desktop"
-                                 r"\deployment_for_bala"
-                                 r"\deployment_refactored"
-                                 r"\cs_pa_nlp\models"
+                self.drm_path = (r"\models"
                                  r"\stanford_deidentifier")
                 self.drt = AutoTokenizer.from_pretrained(
                     self.drm_path)
@@ -1068,17 +1029,10 @@ abfsClient = db.get_abfs_client()
 
 db.write_df_to_azure(abfsClient,
                      input_file=final_df, 
-                     azure_path=r'datascience/data/ds/sandbox/shibushaun/silver/final/final_output_Jan2024.csv', 
+                     azure_path=r'/final_output_Jan2024.csv', 
                      format="csv", 
                      verbose=True)
 
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC **LLAMA 2 CHAT 7B HF INFERENCING FOR PRODUCTION CALLS** 
-
-# COMMAND ----------
 
 import ast
 import asyncio
@@ -1152,17 +1106,9 @@ nltk.download("punkt")
 from huggingface_hub import login
 login()
 
-# COMMAND ----------
 
 db = DBUtilConnectionCreator(dbutils=dbutils)
 abfsClient = db.get_abfs_client()
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC Llama-2-7b-chat-hf
-
-# COMMAND ----------
 
 def context_generator(transcription): 
     transcription_df = pd.DataFrame([transcription])
@@ -1181,7 +1127,7 @@ def context_generator(transcription):
     
 def llama_inference(prompt_template, max_new_tokens=500, max_attempts=5, retry_delay=2):
     API_URL = "https://api-inference.huggingface.co/models/meta-llama/Llama-2-7b-chat-hf"
-    headers = {"Authorization": f"Bearer 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",
+    headers = {"Authorization": f"Bearer ",
                "Content-Type": "application/json"}
     json_body = {
         "inputs": prompt_template,
@@ -1205,21 +1151,6 @@ def llama_inference(prompt_template, max_new_tokens=500, max_attempts=5, retry_d
             return response  # Return any other errors
 
     return "Maximum attempts reached. Model still loading or unavailable."
-
-#def llama_inference(prompt_template, max_new_tokens=500):
-#    API_URL = "https://api-inference.huggingface.co/models/meta-llama/Llama-2-7b-chat-hf"
-#    headers = {"Authorization": f"Bearer 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",
-#            "Content-Type": "application/json",}
-#    json_body = {
-#        "inputs": prompt_template,
-#                "parameters": {"max_new_tokens":max_new_tokens, "top_p":0.9, "temperature":0.4}
-#        }
-#    data = json.dumps(json_body)
-#    response = requests.request("POST", API_URL, headers=headers, data=data)
-#    try:
-#        return json.loads(response.content.decode("utf-8"))
-#    except:
-#        return response
 
 def satisfaction(t,
                  satisfaction_score_prompt_template):
@@ -1292,8 +1223,6 @@ def topic_output_format_validator(t,
     topic_output_validated = llama_inference(llama_2_output_structure_confirmation_template.format(t))
     return topic_output_validated[0]['generated_text'].strip()
 
-
-# COMMAND ----------
 
 satisfaction_score_prompt_template = """
 [INST] <<SYS>> After analyzing the conversation, provide the customer satisfaction score and the reason for this score in the following format: 
@@ -1418,9 +1347,7 @@ Your response should consist solely of the validated list of topics. DO NOT ADD 
 """
 
 
-# COMMAND ----------
-
-with abfsClient.open(r'datascience/data/ds/sandbox/shibushaun/silver/final/final_output_Jan2024.csv',"rb") as f:
+with abfsClient.open(r'/final/final_output_Jan2024.csv',"rb") as f:
     test = pd.read_csv(f)
 
 test['Transcription'] = test['Transcription'].astype(str)
@@ -1440,7 +1367,7 @@ test['topic_list'] = test['topic_list'].apply(lambda x: ast.literal_eval(x.split
 db.write_df_to_azure(
     abfsClient,
     input_file=test,
-    azure_path=r'datascience/data/ds/sandbox/shibushaun/silver/final/llama_inference_prod_Jan2024.csv',
+    azure_path=r'/final/llama_inference_prod_Jan2024.csv',
     format="csv",
     verbose=True
 )
@@ -1453,7 +1380,6 @@ test['topic_list'] = test['topics_discussed'].apply(
 test['topic_list'] = test['topic_list'].apply(lambda x: ast.literal_eval(x.split("\n\n")[1].strip()) if "\n\n" in x else ast.literal_eval(x))
 test
 
-# COMMAND ----------
 
 # Function to count topics
 def count_topics(data):
@@ -1479,7 +1405,6 @@ topic_counts = count_topics(test['topic_list'])
 for topic, count in topic_counts.items():
     print(f"{topic}: {count}")
 
-# COMMAND ----------
 
 ap = AudioProcessor(abfs_client = abfsClient, pytest_flag=False, db=db)
 
@@ -1490,27 +1415,13 @@ test['redacted_actions'] = test['actions'].apply(lambda x: ap.double_redact(ap.r
 db.write_df_to_azure(
     abfsClient,
     input_file=test,
-    azure_path=r'datascience/data/ds/sandbox/shibushaun/silver/final/llama_inference_prod_Jan2024.csv',
+    azure_path=r'/llama_inference_prod_Jan2024.csv',
     format="csv",
     verbose=True
 )
 
 
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC **LLAMA EXECUTION TIME BENCHMARKING**
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC USING LLAMA FROM INFERENCE END POINT 
-
-# COMMAND ----------
-
 transcription = test.at[55,'Transcription']
-
-# COMMAND ----------
 
 start = time.time()
 summ = summary(transcription,
@@ -1518,7 +1429,6 @@ summ = summary(transcription,
 print(time.time()-start)
 print(summ)
 
-# COMMAND ----------
 
 start = time.time()
 satisfaction_dict = satisfaction(transcription,
@@ -1526,7 +1436,6 @@ satisfaction_dict = satisfaction(transcription,
 print(time.time()-start)
 print(satisfaction_dict)
 
-# COMMAND ----------
 
 start = time.time()
 top = topics(summ,
@@ -1534,7 +1443,7 @@ top = topics(summ,
 print(time.time()-start)
 print(top)
 
-# COMMAND ----------
+
 
 start = time.time()
 loa = list_of_actions(transcription,
@@ -1542,46 +1451,26 @@ loa = list_of_actions(transcription,
 print(time.time()-start)
 print(loa)
 
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC LOADING LLAMA 2 GGUF FROM HUGGINGFACE
-
-# COMMAND ----------
 
 pipe = AutoModelForCausalLM.from_pretrained("TheBloke/Llama-2-7b-Chat-GGUF", model_file="llama-2-7b-chat.Q3_K_S.gguf", model_type="llama", gpu_layers=0)
 start = time.time()
 print(pipe(summary_prompt_template.format(transcription)))
 print(time.time()-start)
 
-# COMMAND ----------
 
 start = time.time()
 print(pipe(actions_taken_prompt_template.format(transcription)))
 print(time.time()-start)
 
-# COMMAND ----------
-
 start = time.time()
 print(pipe(satisfaction_score_prompt_template.format(transcription)))
 print(time.time()-start)
-
-# COMMAND ----------
 
 start = time.time()
 print(pipe(topic_inference_prompt_template.format(transcription)))
 print(time.time()-start)
 
-# COMMAND ----------
 
-
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC LOAD LLAMA 2 FROM HUGGINGFACE
-
-# COMMAND ----------
 
 # Use a pipeline as a high-level helper
 from transformers import pipeline
@@ -1591,40 +1480,28 @@ start = time.time()
 print(pipe(summary_prompt_template.format(transcription)))
 print(time.time()-start)
 
-# COMMAND ----------
 
 start = time.time()
 print(pipe(summary_prompt_template.format(transcription)))
 print(time.time()-start)
 
-# COMMAND ----------
 
 start = time.time()
 print(pipe(actions_taken_prompt_template.format(transcription)))
 print(time.time()-start)
 
-# COMMAND ----------
 
 start = time.time()
 print(pipe(satisfaction_score_prompt_template.format(transcription)))
 print(time.time()-start)
 
-# COMMAND ----------
 
 start = time.time()
 print(pipe(topic_inference_prompt_template.format(transcription)))
 print(time.time()-start)
 
-# COMMAND ----------
 
 del pipe
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC LOAD LLAMA 2 LOCALLY
-
-# COMMAND ----------
 
 db = db_utils.DBUtilConnectionCreator(dbutils=dbutils)
 abfsClient = db.get_abfs_client()
@@ -1649,12 +1526,9 @@ with tempfile.TemporaryDirectory() as temp_dir:
     #tokenizer = AutoTokenizer.from_pretrained(save_directory)
     print(time.time()-start)
 
-# COMMAND ----------
 
 trans = test.at[55,'Transcription']
 print(trans)
-
-# COMMAND ----------
 
 start = time.time()
 topics = pipe(topic_inference_prompt_template.format(trans))[0]['generated_text'].split("[/INST]")[1].split("\n\n")[2]
