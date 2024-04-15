@@ -34,7 +34,7 @@ import pandas as pd
 db = DBUtilConnectionCreator(dbutils=dbutils)
 abfsClient = db.get_abfs_client()
 ##READING TRANSCRIPTIONS FOR INFERENCE##
-with abfsClient.open(r'datascience/data/ds/sandbox/shibushaun/silver/final/llama_inference_prod_final_output_combined_medium_FEB.csv',"rb") as f:
+with abfsClient.open(r'llama_inference_prod_final_output_combined_medium_FEB.csv',"rb") as f:
     test = pd.read_csv(f)
     
 
