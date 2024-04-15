@@ -65,7 +65,7 @@ class Gramformer:
         self.model_loaded = False
 
         if models == 1:
-            self.correction_model, self.correction_tokenizer = DBUtilConnectionCreator(self.db).download_and_load_gramformer_model(self.abfs_client, "datascience/data/ds/sandbox/shibushaun/huggingface_models/gramformer")
+            self.correction_model, self.correction_tokenizer = DBUtilConnectionCreator(self.db).download_and_load_gramformer_model(self.abfs_client, "huggingface_models/gramformer")
             self.correction_model = self.correction_model.to(device)
             self.model_loaded = True
             print("[Gramformer] Grammar error correct/highlight model loaded..")
@@ -375,13 +375,13 @@ class AudioProcessor:
         self.abfs_client = abfs_client
         self.db = db
         if self.pytest_flag == False:
-            self.config_file_path = "datascience/data/ds/sandbox/shibushaun/audio_processor_credentials/credentials_new.json"
+            self.config_file_path = "audio_processor_credentials/credentials_new.json"
             with self.abfs_client.open(self.config_file_path, 'r') as f:
                 config = json.load(f)
-                #self.redaction_model, self.tokenizer = DBUtilConnectionCreator(self.db).download_and_load_redaction_model(self.abfs_client, "datascience/data/ds/sandbox/shibushaun/huggingface_models/StanfordAIMI/stanford-deidentifier-base")
+                #self.redaction_model, self.tokenizer = DBUtilConnectionCreator(self.db).download_and_load_redaction_model(self.abfs_client, "huggingface_models/StanfordAIMI/stanford-deidentifier-base")
                 #self.redaction_model = "Jean-Baptiste/roberta-large-ner-english"
         else:
-            self.config_file_path = r"C:\Users\307164\Desktop\customer_service_insights\cs_pa_nlp\combined\credentials\audio_processor_credentials.json"
+            self.config_file_path = r"customer_service_insights\cs_pa_nlp\combined\credentials\audio_processor_credentials.json"
             with open(self.config_file_path, 'r') as f:
                 config = json.load(f)
                 huggingface_hub.login(config['hf_token'])
@@ -473,11 +473,11 @@ class AudioProcessor:
         log_file_name = 'audio_processor_log' + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.log'
         
         if self.db == "":
-            path_to_log_file = r"C:\Users\307164\Desktop\customer_service_insights_v2.0\logs"
+            path_to_log_file = r"customer_service_insights_v2.0\logs"
             with open(os.path.join(path_to_log_file, log_file_name), 'wb') as log_file:
                 log_file.write(self.temp_log_file.read())
         else:
-            path_to_log_file = "datascience/data/ds/sandbox/shibushaun/logs"
+            path_to_log_file = "logs"
             DBUtilConnectionCreator(self.db).create_text_file(self.abfs_client, path_to_log_file, log_file_name, "")
         
             with self.abfs_client.open(os.path.join(path_to_log_file, log_file_name), 'wb') as log_file:
@@ -790,7 +790,7 @@ class AllContextWindowSummaryGenerator:
         self.pytest_flag = pytest_flag
         self.db = db
         if self.pytest_flag == False:
-            self.config_file_path = "datascience/data/ds/sandbox/shibushaun/summarization_credentials/summ_cred_new.yaml"
+            self.config_file_path = "summarization_credentials/summ_cred_new.yaml"
             with self.abfs_client.open(self.config_file_path, 'r') as file:
                 config = yaml.safe_load(file)
                 self.input_path = config["input_path"]
@@ -799,9 +799,9 @@ class AllContextWindowSummaryGenerator:
                 self.input_path,
                 format="csv",
                 verbose=True)
-            self.model, self.tokenizer = DBUtilConnectionCreator(self.db).download_and_load_finetuned_t5_summarizer(self.abfs_client, 'datascience/data/ds/sandbox/shibushaun/huggingface_models/philschmid/bart')
+            self.model, self.tokenizer = DBUtilConnectionCreator(self.db).download_and_load_finetuned_t5_summarizer(self.abfs_client, 'huggingface_models/philschmid/bart')
         else:
-            self.config_file_path = r"C:\Users\307164\Desktop\customer_service_insights_final\customer_service_insights\credentials\summ_cred.yaml"
+            self.config_file_path = r"customer_service_insights_final\customer_service_insights\credentials\summ_cred.yaml"
             with open(self.config_file_path, 'r') as file:
                 config = yaml.safe_load(file)
                 self.input_path = config['input_path']
@@ -863,11 +863,11 @@ class AllContextWindowSummaryGenerator:
         log_file_name = 'summary_generator_log' + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.log'
         
         if self.db == "":
-            path_to_log_file = r"C:\Users\307164\Desktop\customer_service_insights_v2.0\logs"
+            path_to_log_file = r"customer_service_insights_v2.0\logs"
             with open(os.path.join(path_to_log_file, log_file_name), 'wb') as log_file:
                 log_file.write(self.temp_log_file.read())
         else:
-            path_to_log_file = "datascience/data/ds/sandbox/shibushaun/logs"
+            path_to_log_file = "logs"
             DBUtilConnectionCreator(self.db).create_text_file(self.abfs_client, path_to_log_file, log_file_name, "")
         
             with self.abfs_client.open(os.path.join(path_to_log_file, log_file_name), 'wb') as log_file:
@@ -1070,15 +1070,15 @@ class TopicGenerator:
         self.abfs_client = abfs_client
         if self.pytest_flag == False:
             self.db = db
-            self.config_file_path = r'datascience/data/ds/sandbox/shibushaun/topic_modelling_credentials/topic_cred_new.json'
+            self.config_file_path = r'topic_modelling_credentials/topic_cred_new.json'
             with self.abfs_client.open(self.config_file_path, 'r') as file:
                 self.config = json.load(file)
             csv_file_path = self.config['csv_file_path']
             with self.abfs_client.open(csv_file_path, 'r') as file:
                 self.call_transcriptions = pd.read_csv(file)
-            self.classifier = DBUtilConnectionCreator(self.db).download_and_load_zeroshot_model(self.abfs_client, "datascience/data/ds/sandbox/shibushaun/huggingface_models/bart_zeroshot")
+            self.classifier = DBUtilConnectionCreator(self.db).download_and_load_zeroshot_model(self.abfs_client, "huggingface_models/bart_zeroshot")
         else:
-            self.config_file_path = r"C:\Users\307164\Desktop\customer_service_insights_final\customer_service_insights\credentials\topic_modelling_cred.json"
+            self.config_file_path = r"customer_service_insights_final\customer_service_insights\credentials\topic_modelling_cred.json"
             with open(self.config_file_path, 'r') as file:
                 self.config = json.load(file)
             csv_file_path = self.config['csv_file_path']
@@ -1143,11 +1143,11 @@ class TopicGenerator:
         log_file_name = 'topic_modeller_log' + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.log'
         
         if self.db == "":
-            path_to_log_file = r"C:\Users\307164\Desktop\customer_service_insights_v2.0\logs"
+            path_to_log_file = r"customer_service_insights_v2.0\logs"
             with open(os.path.join(path_to_log_file, log_file_name), 'wb') as log_file:
                 log_file.write(self.temp_log_file.read())
         else:
-            path_to_log_file = "datascience/data/ds/sandbox/shibushaun/logs"
+            path_to_log_file = "logs"
             DBUtilConnectionCreator(self.db).create_text_file(self.abfs_client, path_to_log_file, log_file_name, "")
         
             with self.abfs_client.open(os.path.join(path_to_log_file, log_file_name), 'wb') as log_file:
@@ -1458,7 +1458,7 @@ class sentiment_eval:
         self.abfs_client = abfs_client
         self.pytest_flag = pytest_flag
         if self.pytest_flag == False:
-            self.config_file_path = "datascience/data/ds/sandbox/shibushaun/sentiment_analysis_credentials/sentiment_analysis_cred_new.yaml"
+            self.config_file_path = "sentiment_analysis_credentials/sentiment_analysis_cred_new.yaml"
             with self.abfs_client.open(self.config_file_path, 'r') as file:
                 config = yaml.safe_load(file)
                 self.input_path = config['input_path']
@@ -1469,7 +1469,7 @@ class sentiment_eval:
                 format="csv",
                 verbose=True)
         else:
-            self.config_file_path = r"C:\Users\307164\Desktop\customer_service_insights_final\customer_service_insights\credentials\sentiment_analysis_cred.yaml"
+            self.config_file_path = r"customer_service_insights_final\customer_service_insights\credentials\sentiment_analysis_cred.yaml"
             with open(self.config_file_path, 'r') as file:
                 config = yaml.safe_load(file)
                 self.input_path = config['input_path']
@@ -1479,7 +1479,7 @@ class sentiment_eval:
         self.output_storage_path = config['output_storage_path']
         #self.sid_obj = SentimentIntensityAnalyzer()
         model_path = "cardiffnlp/twitter-roberta-base-sentiment-latest"
-        self.pipe = DBUtilConnectionCreator(self.db).download_and_load_sentiment_model(self.abfs_client, "datascience/data/ds/sandbox/shibushaun/huggingface_models/cardiffnlp/twitter-roberta-base-sentiment-latest")
+        self.pipe = DBUtilConnectionCreator(self.db).download_and_load_sentiment_model(self.abfs_client, "huggingface_models/cardiffnlp/twitter-roberta-base-sentiment-latest")
         self.temp_log_file = ""        
         self.logger = self.setup_logger()
 
@@ -1499,11 +1499,11 @@ class sentiment_eval:
         log_file_name = 'sentiment_computer_log' + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.log'
         
         if self.db == "":
-            path_to_log_file = r"C:\Users\307164\Desktop\customer_service_insights_v2.0\logs"
+            path_to_log_file = r"customer_service_insights_v2.0\logs"
             with open(os.path.join(path_to_log_file, log_file_name), 'wb') as log_file:
                 log_file.write(self.temp_log_file.read())
         else:
-            path_to_log_file = "datascience/data/ds/sandbox/shibushaun/logs"
+            path_to_log_file = "logs"
             DBUtilConnectionCreator(self.db).create_text_file(self.abfs_client, path_to_log_file, log_file_name, "")
         
             with self.abfs_client.open(os.path.join(path_to_log_file, log_file_name), 'wb') as log_file:
